@@ -149,7 +149,11 @@ def extended_src_weights(model, wavelet, v):
     return w_out, [Eq(w_out, w_out + wf * wavelett)]
 
 
+<<<<<<< HEAD
 def freesurface(model, eq):
+=======
+def freesurface(model, pde, u):
+>>>>>>> 1841952... more progress
     """
     Generate the stencil that mirrors the field as a free surface modeling for
     the acoustic wave equation
@@ -162,6 +166,7 @@ def freesurface(model, eq):
         Equation to apply mirror to
     """
     fs_eq = []
+<<<<<<< HEAD
     for eq_i in eq:
         for p in eq_i._flatten:
             lhs, rhs = p.evaluate.args
@@ -178,6 +183,23 @@ def freesurface(model, eq):
                     mapper.update({f: s * f.subs({zind: INT(abs(zind))})})
             fs_eq.append(Eq(lhs, rhs.subs(mapper),
                             subdomain=model.grid.subdomains['fsdomain']))
+=======
+    for p, wf in zip(pde, as_tuple(u)):
+        lhs = p.lhs
+        rhs = p.rhs.evaluate
+        # Add modulo replacements to to rhs
+        z = model.grid.dimensions[-1]
+        zfs = model.grid.subdomains['fsdomain'].dimensions[-1]
+
+        funcs = retrieve_functions(rhs.evaluate)
+        mapper = {}
+        for f in funcs:
+            zind = f.indices[-1] 
+            if (zind - z).as_coeff_Mul()[0] < 0:
+                s = sign(zind.subs({z: zfs, z.spacing: 1}))
+                mapper.update({f: s * f.subs({zind: INT(abs(zind))})})
+        fs_eq.append(Eq(lhs, rhs.subs(mapper), subdomain=model.grid.subdomains['fsdomain']))
+>>>>>>> 1841952... more progress
     return fs_eq
 
 
