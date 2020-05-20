@@ -50,7 +50,6 @@ def forward(model, src_coords, rcv_coords, wavelet, space_order=8, save=False,
 
     if return_op:
         return op, u, rcv
-
     op()
 
     # Output
@@ -84,7 +83,6 @@ def adjoint(model, y, src_coords, rcv_coords, space_order=8, q=0,
     subs = model.spacing_map
     op = Operator(tmp + pde + ws_expr + geom_expr,
                   subs=subs, name="adjoint"+name(model))
-
     op()
 
     # Output
@@ -154,7 +152,6 @@ def born(model, src_coords, rcv_coords, wavelet, space_order=8,
     subs = model.spacing_map
     op = Operator(tmpu + tmpul + pde + geom_expr + pdel + geom_exprl,
                   subs=subs, name="born"+name(model))
-
     op()
     # Output
     return rcvl.data, u

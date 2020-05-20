@@ -71,7 +71,6 @@ def acoustic_kernel(model, u, fw=True, q=None):
         return [Eq(u_n, stencil, subdomain=model.grid.subdomains['nofsdomain'])]
     return [Eq(u_n, stencil)]
 
-
 def tti_kernel(model, u1, u2, fw=True, q=None):
     """
     TTI wave equation (one from my paper) time stepper
