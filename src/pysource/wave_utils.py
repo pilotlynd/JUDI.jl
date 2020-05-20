@@ -149,11 +149,7 @@ def extended_src_weights(model, wavelet, v):
     return w_out, [Eq(w_out, w_out + wf * wavelett)]
 
 
-<<<<<<< HEAD
 def freesurface(model, eq):
-=======
-def freesurface(model, pde, u):
->>>>>>> 1841952... more progress
     """
     Generate the stencil that mirrors the field as a free surface modeling for
     the acoustic wave equation
@@ -194,12 +190,17 @@ def freesurface(model, pde, u):
         funcs = retrieve_functions(rhs.evaluate)
         mapper = {}
         for f in funcs:
-            zind = f.indices[-1] 
+            zind = f.indices[-1]
             if (zind - z).as_coeff_Mul()[0] < 0:
                 s = sign(zind.subs({z: zfs, z.spacing: 1}))
                 mapper.update({f: s * f.subs({zind: INT(abs(zind))})})
+<<<<<<< HEAD
         fs_eq.append(Eq(lhs, rhs.subs(mapper), subdomain=model.grid.subdomains['fsdomain']))
 >>>>>>> 1841952... more progress
+=======
+        fs_eq.append(Eq(lhs, rhs.subs(mapper),
+                        subdomain=model.grid.subdomains['fsdomain']))
+>>>>>>> ac1ff0c... more progress
     return fs_eq
 
 

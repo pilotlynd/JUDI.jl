@@ -4,7 +4,7 @@ from wave_utils import (wf_as_src, wavefield, otf_dft, extended_src_weights,
                         extented_src, wavefield_subsampled)
 from sensitivity import grad_expr, lin_src
 
-from devito import Operator, Function, DefaultDimension, Eq
+from devito import Operator, Function
 from devito.tools import as_tuple
 
 

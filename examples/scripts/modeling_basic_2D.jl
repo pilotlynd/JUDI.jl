@@ -75,13 +75,13 @@ J = judiJacobian(Pr*F0*adjoint(Ps), q)
 
 # Nonlinear modeling
 dobs = Pr*F*adjoint(Ps)*q
-# # Adjoint
-# qad = Ps*adjoint(F)*adjoint(Pr)*dobs
+# Adjoint
+qad = Ps*adjoint(F)*adjoint(Pr)*dobs
 
-# # Linearized modeling
-# dD = J*dm
-# # Adjoint jacobian
-# rtm = adjoint(J)*dD
+# Linearized modeling
+dD = J*dm
+# Adjoint jacobian
+rtm = adjoint(J)*dD
 
-# # evaluate FWI objective function
-# f, g = fwi_objective(model0, q, dobs; options=opt)
+# evaluate FWI objective function
+f, g = fwi_objective(model0, q, dobs; options=opt)
