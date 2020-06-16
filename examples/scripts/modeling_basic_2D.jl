@@ -64,7 +64,8 @@ info = Info(prod(n), nsrc, ntComp)
 ###################################################################################################
 
 # Write shots as segy files to disk
-opt = Options(optimal_checkpointing=false, isic=false, subsampling_factor=2, dt_comp=1.0)
+# opt = Options(optimal_checkpointing=false, isic=false, subsampling_factor=2, dt_comp=1.0)
+opt = Options(mpi=2)
 
 # Setup operators
 Pr = judiProjection(info, recGeometry)
@@ -75,13 +76,13 @@ J = judiJacobian(Pr*F0*adjoint(Ps), q)
 
 # Nonlinear modeling
 dobs = Pr*F*adjoint(Ps)*q
-# Adjoint
-qad = Ps*adjoint(F)*adjoint(Pr)*dobs
+# # Adjoint
+# qad = Ps*adjoint(F)*adjoint(Pr)*dobs
 
-# Linearized modeling
-dD = J*dm
-# Adjoint jacobian
-rtm = adjoint(J)*dD
+# # Linearized modeling
+# dD = J*dm
+# # Adjoint jacobian
+# rtm = adjoint(J)*dD
 
-# evaluate FWI objective function
-f, g = fwi_objective(model0, q, dobs; options=opt)
+# # evaluate FWI objective function
+# f, g = fwi_objective(model0, q, dobs; options=opt)

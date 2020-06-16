@@ -1,5 +1,21 @@
 export devito_interface
 
+function devito_interface(model::Modelall, op, args...)
+    options = args[end]
+    if options.mpi > 1
+        argout = mpi_devito_interface(model, op, args...)
+        println(argout)
+    else
+        # Set up Python model structure
+        modelPy = devito_model(model, options)
+        update_m(modelPy, model.m, dims)
+        if op=='J' && mode == 1
+            update_dm(modelPy, reshape(dm, model.n), dims)
+        end
+        return devito_interface(modelPy, model, args...)
+    end
+end
+
 # d_obs = Pr*F*Ps'*q
 function devito_interface(modelPy::PyCall.PyObject, model, srcGeometry::Geometry, srcData::Array, recGeometry::Geometry, recData::Nothing, dm::Nothing, options::Options)
     ac = load_devito_jit()
@@ -15,7 +31,9 @@ function devito_interface(modelPy::PyCall.PyObject, model, srcGeometry::Geometry
     rec_coords = setup_grid(recGeometry, modelPy.shape)
 
     # Devito call
-    dOut = pycall(ac."forward_rec", Array{Float32,2}, modelPy, src_coords, qIn, rec_coords, space_order=options.space_order)
+    res = pycall(ac."forward_rec", PyObject, modelPy, src_coords, qIn, rec_coords, space_order=options.space_order, free_surface=options.free_surface)
+    dOut = get(res, 0)
+    coords = get(res, 1)
     ntRec > ntComp && (dOut = [dOut zeros(size(dOut,1), ntRec - ntComp)])
     dOut = time_resample(dOut,dtComp,recGeometry)
 
@@ -26,6 +44,11 @@ function devito_interface(modelPy::PyCall.PyObject, model, srcGeometry::Geometry
     elseif options.return_array == true
         return vec(dOut)
     else
+        if options.mpi < 0
+            geom_loc = recGeomtery 
+        else
+            geom_loc = Geometry(coords...; dt=recGeomtery.dt[1], t=recGeomtery.t[1])
+        end
         return judiVector(recGeometry,dOut)
     end
 end

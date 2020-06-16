@@ -58,4 +58,9 @@ include("judiJacobianExtendedSource.jl")  # Jacobian of extended source modeling
 # Preconditioners and optimization
 include("seismic_preconditioners.jl")
 
+
+#############################################################################
+# MPI utility functions
+include("mpi.jl")
+
 end
