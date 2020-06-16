@@ -1,3 +1,4 @@
+
 time_modeling(model::Modelall, srcGeometry, srcData, recGeometry, recData, perturbation, srcnum::UnitRange{Int64}, op::Char, mode::Int64) =
     time_modeling(model, srcGeometry, srcData, recGeometry, recData, perturbation, srcnum, op, mode, Options())
 
@@ -6,8 +7,8 @@ function time_modeling(model::Modelall, srcGeometry, srcData, recGeometry, recDa
 # and if applicable the input data amongst the available workers.
 
     p = default_worker_pool()
-    # time_modeling_par = remote(TimeModeling.time_modeling)
-    # time_modeling = retry(time_modeling_par)
+    time_modeling_par = remote(TimeModeling.time_modeling)
+    time_modeling = retry(time_modeling_par)
 
     numSources = length(srcnum)
     results = Array{Any}(undef, numSources)
@@ -31,7 +32,7 @@ function time_modeling(model::Modelall, srcGeometry, srcData, recGeometry, recDa
 
             # Parallelization
             if op=='F' && mode==1
-                results[j] = time_modeling(model, srcGeometryLocal, copy(srcData[j:j]), recGeometryLocal, nothing, nothing, j, op, mode, opt_local)
+                @async results[j] = time_modeling(model, srcGeometryLocal, copy(srcData[j:j]), recGeometryLocal, nothing, nothing, j, op, mode, opt_local)
             elseif op=='F' && mode==-1
                 @async results[j] = time_modeling(model, srcGeometryLocal, nothing, recGeometryLocal, copy(recData[j:j]), nothing, j, op, mode, opt_local)
             elseif op=='J' && mode==1
