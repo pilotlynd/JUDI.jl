@@ -4,7 +4,7 @@ function devito_interface(model::Modelall, op, args...)
     options = args[end]
     if options.mpi > 1
         argout = mpi_devito_interface(model, op, args...)
-        println(argout)
+        return argout
     else
         # Set up Python model structure
         modelPy = devito_model(model, options)
@@ -34,8 +34,11 @@ function devito_interface(modelPy::PyCall.PyObject, model, srcGeometry::Geometry
     res = pycall(ac."forward_rec", PyObject, modelPy, src_coords, qIn, rec_coords, space_order=options.space_order, free_surface=options.free_surface)
     dOut = get(res, 0)
     coords = get(res, 1)
+    xrec = coords[:, 1]
+    zrec = coords[:, end]
+    size(coords,2) == 3 ? yrec = coords[:, 2] : yrec = zeros(Float32, size(xrec))
     ntRec > ntComp && (dOut = [dOut zeros(size(dOut,1), ntRec - ntComp)])
-    dOut = time_resample(dOut,dtComp,recGeometry)
+    dOut = time_resample(dOut, dtComp, recGeometry)
 
     # Output shot record as judiVector
     if options.save_data_to_disk
@@ -44,12 +47,12 @@ function devito_interface(modelPy::PyCall.PyObject, model, srcGeometry::Geometry
     elseif options.return_array == true
         return vec(dOut)
     else
-        if options.mpi < 0
-            geom_loc = recGeomtery 
+        if options.mpi < 2
+            geom_loc = recGeometry 
         else
-            geom_loc = Geometry(coords...; dt=recGeomtery.dt[1], t=recGeomtery.t[1])
+            geom_loc = Geometry(xrec, yrec, zrec; dt=recGeometry.dt[1], t=recGeometry.t[1])
         end
-        return judiVector(recGeometry,dOut)
+        return judiVector(geom_loc, dOut)
     end
 end
 

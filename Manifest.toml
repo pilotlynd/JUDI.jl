@@ -333,7 +333,7 @@ version = "0.8.4"
 
 [[JOLI]]
 deps = ["Distributed", "DistributedArrays", "FFTW", "InplaceOps", "InteractiveUtils", "IterativeSolvers", "Libdl", "LinearAlgebra", "NFFT", "Nullables", "Printf", "Random", "SharedArrays", "SparseArrays", "Test", "Wavelets"]
-path = "/Users/mathiaslouboutin/.julia/dev/JOLI"
+path = "/home/mlouboutin3/.julia/dev/JOLI"
 uuid = "bb331ad6-a1cf-11e9-23da-9bcb53c69f6f"
 version = "0.7.3"
 
