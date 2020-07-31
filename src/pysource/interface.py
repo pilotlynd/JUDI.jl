@@ -33,7 +33,7 @@ def forward_rec(model, src_coords, wavelet, rec_coords, space_order=8):
         Shot record
     """
     rec, _ = forward(model, src_coords, rec_coords, wavelet, save=False,
-                     space_order=space_order, free_surface=free_surface)
+                     space_order=space_order)
     return rec.data, rec.coordinates.data
 
 

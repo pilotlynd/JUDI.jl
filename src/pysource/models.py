@@ -141,8 +141,8 @@ class GenericModel(object):
         if isinstance(field, np.ndarray):
             function = Function(name=name, grid=self.grid, space_order=space_order,
                                 parameter=is_param)
-            function._data_with_outhalo[:] = np.min(func(field))
-            function.data[:] = func(field)
+            #functin.data[10, 10] = 1.0
+            #function._data_with_outhalo[:] = func(field)
         else:
             return field
         self._physical_parameters.append(name)
@@ -311,7 +311,7 @@ class Model(GenericModel):
         # The CFL condtion is then given by
         # dt <= coeff * h / (max(velocity))
         coeff = 0.38 if len(self.shape) == 3 else 0.42
-        dt = self.dtype(coeff * np.min(self.spacing) / (self.scale*self._max_vp))
+        dt = self.dtype(coeff * np.min(self.spacing) / (self.scale))#*self._max_vp))
         if self.dt:
             if self.dt > dt:
                 warnings.warn("Provided dt=%s is bigger than maximum stable dt %s "

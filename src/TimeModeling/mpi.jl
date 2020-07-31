@@ -56,7 +56,7 @@ function mpi_devito_interface(model, op, args...)
         comm = MPI.COMM_WORLD
         # Set up Python model structure
         modelPy = devito_model($model, $options)
-        update_m(modelPy, $model.m, $dims)
+        #update_m(modelPy, $model.m, $dims)
         # Run devito interface
         argout = devito_interface(modelPy, $model, $(args...))
         # Wait for it to finish

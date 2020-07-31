@@ -21,10 +21,10 @@ function time_modeling(model_full::Modelall, srcGeometry, srcData, recGeometry, 
     end
 
     # Set up Python model structure
-    modelPy = devito_model(model, options)
-    if op=='J' && mode == 1
-        update_dm(modelPy, reshape(dm, model.n), options)
-    end
+    #modelPy = devito_model(model, options)
+    #if op=='J' && mode == 1
+    #    update_dm(modelPy, reshape(dm, model.n), options)
+    #end
 
     # Load shot record if stored on disk
     if recData != nothing
@@ -43,7 +43,7 @@ function time_modeling(model_full::Modelall, srcGeometry, srcData, recGeometry, 
     end
 
     # Devito interface
-    argout = devito_interface(modelPy, model, srcGeometry, srcData, recGeometry, recData, dm, options)
+    argout = devito_interface(model, op, srcGeometry, srcData, recGeometry, recData, dm, options)
 
     # Extend gradient back to original model size
     if op=='J' && mode==-1 && options.limit_m==true
